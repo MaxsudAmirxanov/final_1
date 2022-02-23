@@ -8,12 +8,16 @@ class Book():
         self.quantity_chapter = 0
         self.id = uuid.uuid4()
 
-    def сounting_books(self, book):
+    def update_info(self, book):
         "Подсчет количества глав"
         self.quantity_chapter = 0
 
         for i in os.listdir(path=f'book/{book}/Главы'):
             self.quantity_chapter += 1
+
+        text_file = open(f"book/{book}/info.txt", "w", encoding='utf-8')
+        text_file.write(f"ID Книги - {self.id}\nКоличество глав - {self.quantity_chapter}")
+        text_file.close()
 
     def conclusion_book(self):
         print("В библтотеке сейчас есть такие книги:")
@@ -21,9 +25,7 @@ class Book():
             print(f"Книга - {book_name}")
             for chapter_name in os.listdir(path=f'book/{book_name}/Главы'):
                 print(f"  Глава - {chapter_name}")
-            
-            
-
+                print("\n")
 
 
     def сreating_book(self, name, chapter, text):
@@ -44,12 +46,7 @@ class Book():
         text_file.write(f"{text}")
         text_file.close()
 
-        Book.сounting_books(self, book)
-
-        text_file = open(f"book/{name}/info.txt", "w", encoding='utf-8')
-        text_file.write(f"ID Книги - {self.id}\nКоличество глав - {self.quantity_chapter}")
-        text_file.close()
-
+        Book.update_info(self, name)
 
 
     def add_chapter(self, book, chapter, text):
@@ -62,11 +59,8 @@ class Book():
         text_file.write(f"{text}")
         text_file.close()
 
-        Book.сounting_books(self, book)
+        Book.update_info(self, book)
 
-        text_file = open(f"book/{book}/info.txt", "w", encoding='utf-8')
-        text_file.write(f"ID Книги - {self.id}\nКоличество глав - {self.quantity_chapter}")
-        text_file.close()
             
 
         
@@ -75,11 +69,7 @@ class Book():
         shutil.rmtree(f"book/{book}")
         Book.conclusion_book(self)
 
-        Book.сounting_books(self, book)
-
-        text_file = open(f"book/{book}/info.txt", "w", encoding='utf-8')
-        text_file.write(f"ID Книги - {self.id}\nКоличество глав - {self.quantity_chapter}")
-        text_file.close()
+        Book.update_info(self, book)
 
 
     def rm_chapter(self, book, chapter):
@@ -91,11 +81,8 @@ class Book():
             exit()
         Book.conclusion_book(self)
 
-        Book.сounting_books(self, book)
+        Book.update_info(self, book)
 
-        text_file = open(f"book/{book}/info.txt", "w", encoding='utf-8')
-        text_file.write(f"ID Книги - {self.id}\nКоличество глав - {self.quantity_chapter}")
-        text_file.close()
 
     def change_name_book(self, book, new_book):
         "Изменить название книги"
@@ -206,17 +193,22 @@ while loop_1:
 
             print(f"Книга - {book_name}")
             text_file = open(f"book/{book_name}/info.txt", "r", encoding='utf-8')
-            for i in text_file:
-                print(i)
-            text_file.close()
             for chapter_name in os.listdir(path=f'book/{book_name}/Главы'):
                 print(f"  Глава - {chapter_name}")
+            for i in text_file:
+                print(f" {i.strip()}")
+            text_file.close()
+            print("\n")
+
 
         
 
     elif choice_1 == 8:
         print("Выход из программы")
         exit()
+    
+    else:
+        print("Такого пункта нету :(")
 
 
 
