@@ -25,7 +25,7 @@ class Book():
             print(f"Книга - {book_name}")
             for chapter_name in os.listdir(path=f'book/{book_name}/Главы'):
                 print(f"  Глава - {chapter_name}")
-                print("\n")
+            print("\n")
 
 
     def сreating_book(self, name, chapter, text):
@@ -100,9 +100,18 @@ class Book():
             print('Такой главы нету :(')
             exit()
 
-    def output_information_books():
+    def output_information_books(self):
         "Вывести информацию о всех существующих книгах"
-
+        for book_name in os.listdir(path='book'):
+    
+            print(f"Книга - {book_name}")
+            text_file = open(f"book/{book_name}/info.txt", "r", encoding='utf-8')
+            for chapter_name in os.listdir(path=f'book/{book_name}/Главы'):
+                print(f"  Глава - {chapter_name}")
+            for i in text_file:
+                print(f" {i.strip()}")
+            text_file.close()
+            print("\n")
 
 book_1 = Book()
 
@@ -189,16 +198,7 @@ while loop_1:
 
     elif choice_1 == 7:
         "Вывести информацию о всех существующих книгах"
-        for book_name in os.listdir(path='book'):
-
-            print(f"Книга - {book_name}")
-            text_file = open(f"book/{book_name}/info.txt", "r", encoding='utf-8')
-            for chapter_name in os.listdir(path=f'book/{book_name}/Главы'):
-                print(f"  Глава - {chapter_name}")
-            for i in text_file:
-                print(f" {i.strip()}")
-            text_file.close()
-            print("\n")
+        book_1.output_information_books()
 
 
         
