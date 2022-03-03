@@ -4,22 +4,26 @@ import shutil
 
 class Book():
     def __init__(self):
-        self.quantity_book = 0
-        self.quantity_chapter = 0
+
+        self.count = 0
         self.id = uuid.uuid4()
+    
+    def counting_number_chapters(self, book):
+        "Подсчет количества глав"
+        self.count = 0
+        for i in os.listdir(path=f'book/{book}/Главы'):
+            self.count += 1
 
     def update_info(self, book):
-        "Подсчет количества глав"
-        self.quantity_chapter = 0
-
-        for i in os.listdir(path=f'book/{book}/Главы'):
-            self.quantity_chapter += 1
+        "Обнавление файла info.txt"
+        self.counting_number_chapters(self, book)
 
         text_file = open(f"book/{book}/info.txt", "w", encoding='utf-8')
-        text_file.write(f"ID Книги - {self.id}\nКоличество глав - {self.quantity_chapter}")
+        text_file.write(f"ID Книги - {self.id}\nКоличество глав - {self.count}")
         text_file.close()
 
     def conclusion_book(self):
+        "Вывод всех книг, и глав"
         print("В библтотеке сейчас есть такие книги:")
         for book_name in os.listdir(path='book'):
             print(f"Книга - {book_name}")
@@ -53,23 +57,17 @@ class Book():
         "Добавление глав к книге"
         for chapter_name in os.listdir(path=f'book\{book}\Главы'):
             if chapter_name == chapter:
-                print("Такая глава уже существует :(")
+                return False
 
         text_file = open(f"book/{book}/Главы/{chapter}", "w", encoding='utf-8')
         text_file.write(f"{text}")
         text_file.close()
 
-        Book.update_info(self, book)
-
-            
-
-        
+     
     def rm_book(self, book):
         "Удаление книги"
         shutil.rmtree(f"book/{book}")
-        Book.conclusion_book(self)
 
-        Book.update_info(self, book)
 
 
     def rm_chapter(self, book, chapter):
@@ -89,7 +87,7 @@ class Book():
         try:
             os.rename(f"book/{book}", f"book/{new_book}")
         except FileNotFoundError:
-            print('Такой книги нету :(')
+            return False
             exit()
 
     def change_name_chapter(self, chapter, new_chapter, book):
@@ -160,7 +158,9 @@ while loop_1:
 
         chapter = input("Введите название новой главы: \n")
         text = input(f"Введите текст, для Вашей новой гловы: \n")
-        book_1.add_chapter(book, chapter, text)
+        if book_1.add_chapter(book, chapter, text) == False:
+            print("Такая глава уже существует :(")
+        book_1.update_info(book)
 
 
     elif choice_1 == 3:
@@ -168,13 +168,16 @@ while loop_1:
         book_1.conclusion_book()
         book = input("Какую книгу хотите удалить ?:\n ")
         book_1.rm_book(book)
+        book_1.conclusion_book()
+        book_1.update_info(book)
 
     elif choice_1 == 4:
         "Изменить название книги"
         book_1.conclusion_book()
         book = input("Какую книгу хотите переименовать:\n" )
         new_book = input(f"Ведите новое название, для книги {book}:\n" )
-        book_1.change_name_book(book, new_book)
+        if book_1.change_name_book(book, new_book) == False:
+            print('Такой книги нету :(')
 
         book_1.conclusion_book()
 
