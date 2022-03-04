@@ -34,14 +34,8 @@ class Book():
 
     def сreating_book(self, name, chapter, text):
         "Создание книги"
-
         path = f'book\{name}'
-        try:
-            os.makedirs(path)
-        except FileExistsError:
-            print('Такая книга уже сужествует :(')
-            exit()
-
+        os.makedirs(path)
 
         path = f'book\{name}\Главы'
         os.makedirs(path)
@@ -50,7 +44,7 @@ class Book():
         text_file.write(f"{text}")
         text_file.close()
 
-        Book.update_info(self, name)
+        self.update_info(self, name)
 
 
     def add_chapter(self, book, chapter, text):
@@ -69,34 +63,23 @@ class Book():
         shutil.rmtree(f"book/{book}")
 
 
-
     def rm_chapter(self, book, chapter):
         "Удаление глав"
-        try:
-            os.remove(f"book/{book}/Главы/{chapter}")
-        except FileNotFoundError:
-            print('Такой главы нету :(')
-            exit()
-        Book.conclusion_book(self)
-
-        Book.update_info(self, book)
+        
+        os.remove(f"book/{book}/Главы/{chapter}")
+        self.conclusion_book(self)
+        self.update_info(self, book)
 
 
     def change_name_book(self, book, new_book):
         "Изменить название книги"
-        try:
-            os.rename(f"book/{book}", f"book/{new_book}")
-        except FileNotFoundError:
-            return False
-            exit()
+        os.rename(f"book/{book}", f"book/{new_book}")
+
 
     def change_name_chapter(self, chapter, new_chapter, book):
         "Изменить название главы"
-        try:
-            os.rename(f"book/{book}/Главы/{chapter}", f"book/{book}/Главы/{new_chapter}")
-        except FileNotFoundError:
-            print('Такой главы нету :(')
-            exit()
+        os.rename(f"book/{book}/Главы/{chapter}", f"book/{book}/Главы/{new_chapter}")
+
 
     def output_information_books(self, book_name):
         "Вывести информацию о всех существующих книгах"
@@ -144,9 +127,17 @@ while loop_1:
        
 
         name = input('Ведите название вашей книги: \n')
+        for book in os.listdir(path='book'):
+            if name == book:
+                print('Такая книга уже сужествует :(')
+                exit()
+
         chapter = input("Ведите название главы: \n")
         text = input(f"Введите текст, для гловы '{chapter}': \n")
-        book_1.сreating_book(name, chapter, text)
+
+                         
+        book_1.сreating_book(name, chapter, text) == False
+
 
 
     elif choice_1 == 2:
@@ -161,7 +152,6 @@ while loop_1:
             print("Такая глава уже существует :(")
         book_1.update_info(book)
 
-
     elif choice_1 == 3:
         "Удаление книги"
         book_1.conclusion_book()
@@ -174,9 +164,12 @@ while loop_1:
         "Изменить название книги"
         book_1.conclusion_book()
         book = input("Какую книгу хотите переименовать:\n" )
+        for name_book in os.listdir(path="book"):
+            if name_book != book:
+                print('Такой книги нету :(')
+                exit()
         new_book = input(f"Ведите новое название, для книги {book}:\n" )
-        if book_1.change_name_book(book, new_book) == False:
-            print('Такой книги нету :(')
+        book_1.change_name_book(book, new_book)
 
         book_1.conclusion_book()
 
@@ -184,27 +177,47 @@ while loop_1:
         "Изменить название главы"
         book_1.conclusion_book()
 
-        chapter = input("Какую главу хотите переименовать:\n" )
-        book = input("В какой книге находится эта глава ?:\n" )
-        new_chapter = input(f"Ведите новое название, для главы {chapter}:\n" )
 
-        book_1.change_name_chapter(chapter, new_chapter, book)
-        book_1.conclusion_book()
+        book = input("В какой книге находится глава, которую хотите изменить ?:\n" )
+        for name_book in os.listdir(path="book"):
+            if name_book == book:
+                chapter = input("Ведите название этой главы:\n" )
+                for name_chapter in os.listdir(path=f"book/{book}/Главы"):
+                    if name_chapter == chapter:
+                        new_chapter = input(f"Ведите новое название, для главы {chapter}:\n" )
+
+                        book_1.change_name_chapter(chapter, new_chapter, book)
+                        book_1.conclusion_book()
+                else:
+                    print('Такой главы нету :(')
+                    exit()     
+        else:
+            print('Такой книги нету :(')
+            exit() 
 
     elif choice_1 == 6:
         "Удалить главу"
         book_1.conclusion_book()
-        chapter = input("Какую главу хотите удолить ?:\n ")
-        book = input("Введите название книги, в которой находится эта глава: \n")
-        book_1.rm_chapter(book, chapter)
 
+        book = input("Введите название книги, в которой находится эта глава: \n")
+        for name_book in os.listdir(path="book"):
+            if name_book == book:
+                chapter = input("Какую главу хотите удолить ?:\n ")
+                for name_chapter in os.listdir(path=f"book/{book}/Главы"):
+                    if name_chapter == chapter:
+                        book_1.rm_chapter(book, chapter)
+                        book_1.conclusion_book()
+                else:
+                    print('Такой главы нету :(')
+                    exit()     
+        else:
+            print('Такой книги нету :(')
+            exit()        
+        
     elif choice_1 == 7:
         "Вывести информацию о всех существующих книгах"
         for book_name in os.listdir(path='book'):
             book_1.output_information_books(book_name)
-
-
-        
 
     elif choice_1 == 8:
         print("Выход из программы")
