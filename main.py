@@ -95,7 +95,7 @@ class Interface:
         
         print(f"Книга - {book_name}")
         text_file = open(f"books/{book_name}/info.txt", "r", encoding='utf-8')
-        for chapter_name in book_1.file_name_chapters(book_name):
+        for chapter_name in self.book.file_name_chapters(book_name):
             print(f"  Глава - {chapter_name}")
         for i in text_file:
             print(f" {i.strip()}")
