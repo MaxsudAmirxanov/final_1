@@ -71,11 +71,8 @@ class Book():
                     if name_chapter == chapter:
                         os.remove(f"books/{book}/Chapters/{chapter}")
                         self.update_info(book)
-                        console.conclusion_book(book_1.data_dir_books, book_1.current_path)
-                        exit()
                 else:
-                    return False
-                        
+                    return False       
         else:
             return True
                
@@ -83,14 +80,10 @@ class Book():
         "Изменить название книги"
         for name_book in os.listdir(path="books"):
             if name_book == book:
-                try:
-                    os.rename(f"books/{book}", f"books/{new_book}")
-                except FileExistsError:
-                    return 'False_2'
+                os.rename(f"books/{book}", f"books/{new_book}")
                 return True
-                
         else:
-            return 'False_1'
+            return False
 
     def change_name_chapter(self, chapter, new_chapter, book):
         "Изменить название главы"
@@ -99,16 +92,11 @@ class Book():
             if name_book == book:
                 for name_chapter in os.listdir(path=f"books/{book}/Chapters"):
                     if name_chapter == chapter:
-                        try:
-                            os.rename(f"books/{book}/Chapters/{chapter}", f"books/{book}/Chapters/{new_chapter}")
-                        except FileExistsError:
-                            return 'False_3'
-                        console.conclusion_book(book_1.data_dir_books, book_1.current_path)
-                        exit()
+                        os.rename(f"books/{book}/Chapters/{chapter}", f"books/{book}/Chapters/{new_chapter}")  
                 else:
-                    return 'False_2'               
+                    return True             
         else:
-            return 'False_1'
+            return False
 
 name_file_for_books = os.listdir()
 book_1 = Book(name_file_for_books[1])
@@ -172,36 +160,36 @@ class Interface:
             print('Такой книги нету :(')
         if self.book.rm_chapter(book, chapter) == False:
             print('Такой главы нету :(')
+        console.conclusion_book(book_1.data_dir_books, book_1.current_path)
+        exit()
 
     def change_name_book_Interface(self):
         book = input("Какую книгу хотите переименовать:\n" )
         new_book = input(f"Ведите новое название, для книги {book}:\n" )
+        try:
+            if self.book.change_name_book(book, new_book) == False:
+                print('Такой книги нету :(')
 
-        if self.book.change_name_book(book, new_book) == 'False_1':
-            print('Такой книги нету :(')
-
-        if self.book.change_name_book(book, new_book) == 'False_2':
+            if self.book.change_name_book(book, new_book) == True:
+                console.conclusion_book(book_1.data_dir_books, book_1.current_path)
+        except FileExistsError:
             print(' Такая книга уже существует :(')
-
-        if self.book.change_name_book(book, new_book) == True:
-            console.conclusion_book(book_1.data_dir_books, book_1.current_path)
         
     def change_name_chapter_Interface(self):
         book = input("В какой книге находится глава, которую хотите изменить ?:\n" )
         chapter = input("Ведите название этой главы:\n" )
         new_chapter = input(f"Ведите новое название, для главы {chapter}:\n" )
         self.book.change_name_chapter(chapter, new_chapter, book)
+        try:
+            if self.book.change_name_chapter(chapter, new_chapter, book) == False:
+                print('Такой книги нету :(')
 
-        if self.book.change_name_chapter(chapter, new_chapter, book) == 'False_1':
-            print('Такой книги нету :(')
+            if self.book.change_name_chapter(chapter, new_chapter, book) == True:
+                print('Такой главы нету :(')
 
-        if self.book.change_name_chapter(chapter, new_chapter, book) == 'False_2':
-            print('Такой главы нету :(')
-
-        if self.book.change_name_chapter(chapter, new_chapter, book) == 'False_3':
-            print('Такая глава уже существует :(')
-
-        
+        except FileExistsError:
+           print('Такая глава уже существует :(') 
+      
             
 
 console = Interface(book_1)
