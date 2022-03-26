@@ -32,10 +32,7 @@ class Book():
     def сreating_book(self, name, chapter, text):
         "Создание книги"
         path = f'books\{name}'
-        try:
-            os.makedirs(path)
-        except FileExistsError:
-            return True
+        os.makedirs(path)
 
         path = f'books\{name}\Chapters'
         os.makedirs(path)
@@ -45,10 +42,7 @@ class Book():
 
     def add_chapter(self, book, chapter, text):
         "Добавление глав к книге"
-        try:
-            text_file = open(f"books/{book}/Chapters/{chapter}", "w", encoding='utf-8')
-        except FileNotFoundError:
-            return False
+        text_file = open(f"books/{book}/Chapters/{chapter}", "w", encoding='utf-8')
             
         text_file.write(f"{text}")
         text_file.close()
@@ -57,10 +51,7 @@ class Book():
  
     def rm_book(self, book):
         "Удаление книги"
-        try:
-            shutil.rmtree(f"books/{book}")
-        except FileNotFoundError:
-            return False
+        shutil.rmtree(f"books/{book}")
 
     def rm_chapter(self, book, chapter):
         "Удаление глав"  
@@ -130,8 +121,10 @@ class Interface:
     def сreating_book_Interface(self):
         name = input('Ведите название вашей книги: \n')
         chapter = input("Ведите название главы: \n")
-        text = input(f"Введите текст, для гловы '{chapter}': \n") 
-        if self.book.сreating_book(name, chapter, text) == True:
+        text = input(f"Введите текст, для гловы '{chapter}': \n")
+        try: 
+            self.book.сreating_book(name, chapter, text)
+        except FileExistsError: 
             print('Такая книга уже существует')
             exit()
 
@@ -139,9 +132,12 @@ class Interface:
         book = input("К какой книге, хотите добавить новые главы:\n")
         chapter = input("Введите название новой главы: \n")
         text = input(f"Введите текст, для Вашей новой главы: \n")
-        if self.book.add_chapter(book, chapter, text) == False:
+        try:
+            self.book.add_chapter(book, chapter, text)
+        except FileNotFoundError:
             print('Такой книги не существует :(')
             exit()
+
         if book_1.add_chapter(book, chapter, text) == True:
             print("Такая глава уже существует :(")
             exit()
@@ -149,7 +145,9 @@ class Interface:
 
     def rm_book_Interface(self):
         book = input("Какую книгу хотите удалить ?:\n ")
-        if self.book.rm_book(book) == False:
+        try:
+            self.book.rm_book(book)
+        except FileNotFoundError:
             print('Такой книги не существует :(')
             exit()
 
