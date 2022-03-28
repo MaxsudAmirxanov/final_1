@@ -55,15 +55,12 @@ class Book():
 
     def rm_chapter(self, book, chapter):
         "Удаление глав"  
-        for name_book in os.listdir(path="books"):
-            if name_book == book:
-                
-                for name_chapter in os.listdir(path=f"books/{book}/Chapters"):
-                    if name_chapter == chapter:
-                        os.remove(f"books/{book}/Chapters/{chapter}")
-                        self.update_info(book)
-                else:
-                    return False       
+        if book in os.listdir(path="books"):        
+            if chapter in os.listdir(path=f"books/{book}/Chapters"):
+                    os.remove(f"books/{book}/Chapters/{chapter}")
+                    self.update_info(book)
+            else:
+                return False       
         else:
             return True
                
@@ -156,8 +153,10 @@ class Interface:
         chapter = input("Какую главу хотите удолить ?:\n ")
         if self.book.rm_chapter(book, chapter) == True:
             print('Такой книги нету :(')
+            exit()
         if self.book.rm_chapter(book, chapter) == False:
             print('Такой главы нету :(')
+            exit()
         console.conclusion_book(book_1.data_dir_books, book_1.current_path)
         exit()
 
