@@ -66,23 +66,19 @@ class Book():
                
     def change_name_book(self, book, new_book):
         "Изменить название книги"
-        for name_book in os.listdir(path="books"):
-            if name_book == book:
-                os.rename(f"books/{book}", f"books/{new_book}")
-                return True
+        if book in os.listdir(path="books"):
+            os.rename(f"books/{book}", f"books/{new_book}")
+            return True
         else:
             return False
 
     def change_name_chapter(self, chapter, new_chapter, book):
         "Изменить название главы"
-
-        for name_book in os.listdir(path="books"):
-            if name_book == book:
-                for name_chapter in os.listdir(path=f"books/{book}/Chapters"):
-                    if name_chapter == chapter:
-                        os.rename(f"books/{book}/Chapters/{chapter}", f"books/{book}/Chapters/{new_chapter}")  
-                else:
-                    return True             
+        if book in os.listdir(path="books"):
+            if chapter in os.listdir(path=f"books/{book}/Chapters"):
+                os.rename(f"books/{book}/Chapters/{chapter}", f"books/{book}/Chapters/{new_chapter}")  
+            else:
+                return True             
         else:
             return False
 
